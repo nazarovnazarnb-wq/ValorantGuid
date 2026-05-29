@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Задать вопрос | Valorant Guide</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .questions-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .ask-form {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        .ask-form input, .ask-form textarea {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 10px;
+            color: white;
+            font-family: inherit;
+            margin-bottom: 15px;
+        }
+        .ask-form textarea {
+            resize: vertical;
+        }
+        .question-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            color: #888;
+            font-size: 0.9em;
+        }
+        .question-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .question-text {
+            color: #aaa;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        .answer-section {
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+        .answer-text {
+            color: #ccc;
+            margin-bottom: 10px;
+        }
+        .answer-author {
+            color: #ff4655;
+            font-size: 0.85em;
+        }
+        .reactions {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .reaction-btn {
+            background: none;
+            border: none;
+            color: #888;
+            cursor: pointer;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: color 0.2s;
+        }
+        .reaction-btn:hover {
+            color: #ff4655;
+        }
+        .btn-ask {
+            background: #ff4655;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">🎯 Valorant<span>Guide</span></div>
+            <div class="nav-links">
+                <a href="index.html">Главная</a>
+                <a href="gallery.html">Галерея</a>
+                <a href="profile.html">Профиль</a>
+                <a href="questions.html" class="active">Задать вопрос</a>
+            </div>
+            <div class="burger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="questions-container">
+            <div class="ask-form">
+                <h3 style="margin-bottom: 15px;">❓ Задать вопрос</h3>
+                <input type="text" id="questionTitle" placeholder="Тема вопроса">
+                <textarea id="questionText" rows="3" placeholder="Ваш вопрос..."></textarea>
+                <button class="btn-ask" id="askBtn">Задать вопрос</button>
+            </div>
+
+            <h3 style="margin-bottom: 20px;">💬 Вопросы от сообщества</h3>
+            <div id="questionsContainer"></div>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2025 Valorant Guide. Неофициальный сайт для фанатов.</p>
+    </footer>
+
+    <script>
+        let questions = JSON.parse(localStorage.getItem('valorantQuestions')) || [
+            {
+                id: 1,
+                title: "Как правильно играть за Jett?",
+                text: "Подскажите основные тактики и стратегии за Jett. Как лучше использовать её способности?",
+                author: "Новичок",
+                date: "2025-01-05",
+                answers: [
+                    { author: "ProPlayer", text: "Используй рывок вверх для неожиданных позиций. Дымки ставь в проходы. Ultimate лучше использовать в ближнем бою." }
+                ],
+                likes: 5,
+                dislikes: 0
+            },
+            {
+                id: 2,
+                title: "Какой агент лучше для новичка?",
+                text: "Только начал играть в Valorant. Какого агента выбрать для обучения?",
+                author: "NoobMaster",
+                date: "2025-01-07",
+                answers: [
+                    { author: "Coach", text: "Sage или Phoenix. У них интуитивные способности, которые помогут привыкнуть к игре." }
+                ],
+                likes: 3,
+                dislikes: 0
+            }
+        ];
+        let nextId = questions.length + 1;
+
+        function renderQuestions() {
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = questions.map(q => `
+                <div class="question-card" data-id="${q.id}">
+                    <div class="question-header">
+                        <span>👤 ${q.author}</span>
+                        <span>📅 ${q.date}</span>
+                    </div>
+                    <div class="question-title">${q.title}</div>
+                    <div class="question-text">${q.text}</div>
+                    
+                    <div class="reactions">
+                        <button class="reaction-btn like-btn" data-id="${q.id}">👍 ${q.likes}</button>
+                        <button class="reaction-btn dislike-btn" data-id="${q.id}">👎 ${q.dislikes}</button>
+                    </div>
+                    
+                    ${q.answers && q.answers.length > 0 ? `
+                        <div class="answer-section">
+                            <div class="answer-text">💬 <strong>Ответ эксперта:</strong> ${q.answers[0].text}</div>
+                            <div class="answer-author">— ${q.answers[0].author}</div>
+                        </div>
+                    ` : `
+                        <div class="answer-section">
+                            <div class="answer-text" style="color: #888;">⏳ Ожидает ответа от сообщества...</div>
+                        </div>
+                    `}
+                    
+                    <div class="answer-form" style="margin-top: 15px; display: none;">
+                        <textarea class="answer-input" rows="2" placeholder="Ваш ответ..."></textarea>
+                        <button class="submit-answer" data-id="${q.id}" style="background: #ff4655; border: none; padding: 8px 20px; border-radius: 50px; color: white; margin-top: 10px; cursor: pointer;">Ответить</button>
+                    </div>
+                    <button class="show-answer-btn" style="background: none; border: none; color: #ff4655; cursor: pointer; margin-top: 10px;">💬 Ответить</button>
+                </div>
+            `).join('');
+
+            document.querySelectorAll('.like-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const id = parseInt(btn.dataset.id);
+                    const question = questions.find(q => q.id === id);
+                    question.likes++;
+                    localStorage.setItem('valorantQuestions', JSON.stringify(questions));
+                    renderQuestions();
+                });
+            });
+
+            document.querySelectorAll('.dislike-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const id = parseInt(btn.dataset.id);
+                    const question = questions.find(q => q.id === id);
+                    question.dislikes++;
+                    localStorage.setItem('valorantQuestions', JSON.stringify(questions));
+                    renderQuestions();
+                });
+            });
+
+            document.querySelectorAll('.show-answer-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const card = btn.closest('.question-card');
+                    const answerForm = card.querySelector('.answer-form');
+                    if (answerForm.style.display === 'none') {
+                        answerForm.style.display = 'block';
+                        btn.textContent = '❌ Отмена';
+                    } else {
+                        answerForm.style.display = 'none';
+                        btn.textContent = '💬 Ответить';
+                    }
+                });
+            });
+
+            document.querySelectorAll('.submit-answer').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const id = parseInt(btn.dataset.id);
+                    const card = btn.closest('.question-card');
+                    const input = card.querySelector('.answer-input');
+                    const answerText = input.value.trim();
+                    if (!answerText) {
+                        alert('Введите ответ!');
+                        return;
+                    }
+                    const question = questions.find(q => q.id === id);
+                    question.answers = [{ author: "Гость", text: answerText }];
+                    localStorage.setItem('valorantQuestions', JSON.stringify(questions));
+                    renderQuestions();
+                });
+            });
+        }
+
+        document.getElementById('askBtn').addEventListener('click', () => {
+            const title = document.getElementById('questionTitle').value.trim();
+            const text = document.getElementById('questionText').value.trim();
+            if (!title || !text) {
+                alert('Заполните все поля!');
+                return;
+            }
+            const newQuestion = {
+                id: nextId++,
+                title: title,
+                text: text,
+                author: "Гость",
+                date: new Date().toISOString().split('T')[0],
+                answers: [],
+                likes: 0,
+                dislikes: 0
+            };
+            questions.unshift(newQuestion);
+            localStorage.setItem('valorantQuestions', JSON.stringify(questions));
+            document.getElementById('questionTitle').value = '';
+            document.getElementById('questionText').value = '';
+            renderQuestions();
+        });
+
+        renderQuestions();
+    </script>
+</body>
+</html>

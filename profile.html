@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Профиль | Valorant Guide</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .profile-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .profile-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #ff4655, #ff6b7c);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 3.5em;
+            overflow: hidden;
+        }
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .profile-info {
+            text-align: center;
+        }
+        .profile-info h2 {
+            margin-bottom: 5px;
+        }
+        .profile-info .tag {
+            color: #ff4655;
+            margin-bottom: 20px;
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .info-label {
+            color: #888;
+        }
+        .info-value {
+            font-weight: bold;
+        }
+        .info-value.editable {
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+        .info-value.editable:hover {
+            background: rgba(255, 70, 85, 0.2);
+        }
+        .edit-input {
+            background: rgba(0,0,0,0.6);
+            border: 1px solid #ff4655;
+            border-radius: 8px;
+            padding: 5px 10px;
+            color: white;
+            font-family: inherit;
+            font-size: 1em;
+            width: 200px;
+        }
+        .edit-avatar-btn {
+            background: rgba(255, 70, 85, 0.3);
+            border: 1px solid #ff4655;
+            border-radius: 30px;
+            padding: 8px 20px;
+            color: white;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 0.8em;
+            transition: all 0.2s;
+        }
+        .edit-avatar-btn:hover {
+            background: rgba(255, 70, 85, 0.6);
+        }
+        .reviews-section {
+            margin-top: 30px;
+        }
+        .review-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+        .review-author {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .review-author span:first-child {
+            font-weight: bold;
+            color: #ff4655;
+        }
+        .review-rating {
+            color: gold;
+        }
+        .review-text {
+            color: #aaa;
+            line-height: 1.5;
+        }
+        .add-review {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .add-review textarea {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 10px;
+            color: white;
+            font-family: inherit;
+            resize: vertical;
+            margin-bottom: 15px;
+        }
+        .rating-stars {
+            margin-bottom: 15px;
+        }
+        .star {
+            font-size: 1.8em;
+            cursor: pointer;
+            color: #555;
+            transition: color 0.2s;
+        }
+        .star.active {
+            color: gold;
+        }
+        .btn-submit {
+            background: #ff4655;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .avatar-input {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">🎯 Valorant<span>Guide</span></div>
+            <div class="nav-links">
+                <a href="index.html">Главная</a>
+                <a href="gallery.html">Галерея</a>
+                <a href="profile.html" class="active">Профиль</a>
+                <a href="questions.html">Задать вопрос</a>
+            </div>
+            <div class="burger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="profile-container">
+            <div class="profile-card">
+                <div class="profile-avatar" id="avatarContainer">
+                    <span id="avatarEmoji">🎮</span>
+                    <img id="avatarImage" src="" style="display: none; width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <button class="edit-avatar-btn" id="editAvatarBtn">📷 Сменить аватар</button>
+                <input type="file" id="avatarInput" class="avatar-input" accept="image/*">
+                
+                <div class="profile-info">
+                    <div class="info-row">
+                        <span class="info-label">Имя</span>
+                        <span class="info-value editable" data-field="name" id="nameValue">Игрок</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Возраст</span>
+                        <span class="info-value editable" data-field="age" id="ageValue">—</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Игровой ник</span>
+                        <span class="info-value editable" data-field="nickname" id="nicknameValue">#VAL</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Ранг</span>
+                        <span class="info-value editable" data-field="rank" id="rankValue">Новичок</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Любимый агент</span>
+                        <span class="info-value editable" data-field="agent" id="agentValue">Jett</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">На сайте с</span>
+                        <span class="info-value" id="joinDate">—</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="reviews-section">
+                <h3 style="margin-bottom: 20px;">📝 Отзывы о игроке</h3>
+                <div id="reviewsContainer"></div>
+
+                <div class="add-review">
+                    <h4 style="margin-bottom: 15px;">Оставить отзыв</h4>
+                    <div class="rating-stars" id="ratingStars">
+                        <span class="star" data-value="1">★</span>
+                        <span class="star" data-value="2">★</span>
+                        <span class="star" data-value="3">★</span>
+                        <span class="star" data-value="4">★</span>
+                        <span class="star" data-value="5">★</span>
+                    </div>
+                    <textarea id="reviewText" rows="3" placeholder="Напишите ваш отзыв..."></textarea>
+                    <button class="btn-submit" id="submitReview">Оставить отзыв</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2025 Valorant Guide. Неофициальный сайт для фанатов.</p>
+    </footer>
+
+    <script>
+        let profile = JSON.parse(localStorage.getItem('valorantProfile')) || {
+            name: "Игрок",
+            age: "—",
+            nickname: "#VAL",
+            rank: "Новичок",
+            agent: "Jett",
+            avatarType: "emoji",
+            avatarEmoji: "🎮",
+            avatarImage: "",
+            joinDate: new Date().toLocaleDateString('ru-RU')
+        };
+
+        let reviews = JSON.parse(localStorage.getItem('valorantReviews')) || [
+            { author: "Екатерина", rating: 5, text: "Отличный игрок! Всегда помогает в трудных ситуациях." },
+            { author: "Дмитрий", rating: 5, text: "Профи своего дела. Приятно играть в команде." },
+            { author: "Максим", rating: 4, text: "Хороший игрок, но иногда слишком рискованный стиль." }
+        ];
+        let currentRating = 5;
+
+        function saveProfile() {
+            localStorage.setItem('valorantProfile', JSON.stringify(profile));
+        }
+
+        function renderProfile() {
+            document.getElementById('nameValue').textContent = profile.name;
+            document.getElementById('ageValue').textContent = profile.age;
+            document.getElementById('nicknameValue').textContent = profile.nickname;
+            document.getElementById('rankValue').textContent = profile.rank;
+            document.getElementById('agentValue').textContent = profile.agent;
+            document.getElementById('joinDate').textContent = profile.joinDate || new Date().toLocaleDateString('ru-RU');
+            
+            const avatarEmoji = document.getElementById('avatarEmoji');
+            const avatarImage = document.getElementById('avatarImage');
+            if (profile.avatarType === 'emoji') {
+                avatarEmoji.style.display = 'flex';
+                avatarImage.style.display = 'none';
+                avatarEmoji.textContent = profile.avatarEmoji || '🎮';
+            } else {
+                avatarEmoji.style.display = 'none';
+                avatarImage.style.display = 'block';
+                avatarImage.src = profile.avatarImage;
+            }
+        }
+
+        function makeEditable(field, elementId) {
+            const element = document.getElementById(elementId);
+            const currentValue = profile[field];
+            
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = currentValue;
+            input.className = 'edit-input';
+            
+            element.parentElement.replaceChild(input, element);
+            input.focus();
+            
+            function save() {
+                const newValue = input.value.trim();
+                if (newValue) {
+                    profile[field] = newValue;
+                    saveProfile();
+                }
+                const newSpan = document.createElement('span');
+                newSpan.className = 'info-value editable';
+                newSpan.setAttribute('data-field', field);
+                newSpan.id = elementId;
+                newSpan.textContent = profile[field];
+                input.parentElement.replaceChild(newSpan, input);
+                newSpan.addEventListener('click', () => makeEditable(field, elementId));
+            }
+            
+            input.addEventListener('blur', save);
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') save();
+            });
+        }
+
+        document.getElementById('editAvatarBtn').addEventListener('click', () => {
+            document.getElementById('avatarInput').click();
+        });
+        
+        document.getElementById('avatarInput').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    profile.avatarType = 'image';
+                    profile.avatarImage = event.target.result;
+                    saveProfile();
+                    renderProfile();
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function renderStars(rating) {
+            let stars = '';
+            for (let i = 1; i <= 5; i++) {
+                stars += `<span class="star ${i <= rating ? 'active' : ''}" data-value="${i}">★</span>`;
+            }
+            return stars;
+        }
+
+        function renderReviews() {
+            const container = document.getElementById('reviewsContainer');
+            container.innerHTML = reviews.map(review => `
+                <div class="review-card">
+                    <div class="review-author">
+                        <span>${review.author}</span>
+                        <div class="review-rating">${renderStars(review.rating)}</div>
+                    </div>
+                    <div class="review-text">${review.text}</div>
+                </div>
+            `).join('');
+        }
+
+        document.querySelectorAll('#ratingStars .star').forEach(star => {
+            star.addEventListener('click', () => {
+                currentRating = parseInt(star.dataset.value);
+                document.querySelectorAll('#ratingStars .star').forEach(s => {
+                    if (parseInt(s.dataset.value) <= currentRating) {
+                        s.classList.add('active');
+                    } else {
+                        s.classList.remove('active');
+                    }
+                });
+            });
+        });
+
+        document.getElementById('submitReview').addEventListener('click', () => {
+            const text = document.getElementById('reviewText').value.trim();
+            if (!text) {
+                alert('Напишите текст отзыва!');
+                return;
+            }
+            reviews.unshift({
+                author: "Гость",
+                rating: currentRating,
+                text: text
+            });
+            localStorage.setItem('valorantReviews', JSON.stringify(reviews));
+            document.getElementById('reviewText').value = '';
+            renderReviews();
+        });
+
+        document.querySelectorAll('.info-value.editable').forEach(el => {
+            const field = el.dataset.field;
+            el.addEventListener('click', () => makeEditable(field, el.id));
+        });
+
+        renderProfile();
+        renderReviews();
+    </script>
+</body>
+</html>

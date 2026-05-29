@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Галерея агентов | Valorant Guide</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .agents-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+        }
+        .agent-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        .agent-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 70, 85, 0.2);
+        }
+        .agent-header {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        .agent-avatar {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #ff4655, #ff6b7c);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            overflow: hidden;
+        }
+        .agent-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .agent-name {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        .agent-role {
+            color: #ff4655;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        .agent-abilities {
+            padding: 20px;
+        }
+        .ability {
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 10px;
+        }
+        .ability-name {
+            font-weight: bold;
+            color: #ff4655;
+            margin-bottom: 5px;
+        }
+        .ability-desc {
+            font-size: 0.85em;
+            color: #aaa;
+            line-height: 1.4;
+        }
+        .modal-abilities {
+            margin-top: 20px;
+        }
+        .modal-agent-avatar {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+        .modal-agent-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">🎯 Valorant<span>Guide</span></div>
+            <div class="nav-links">
+                <a href="index.html">Главная</a>
+                <a href="gallery.html" class="active">Галерея</a>
+                <a href="profile.html">Профиль</a>
+                <a href="questions.html">Задать вопрос</a>
+            </div>
+            <div class="burger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <h1 style="margin-bottom: 30px;">🎭 Агенты Valorant</h1>
+        <div class="agents-grid" id="agentsGrid"></div>
+    </main>
+
+    <div class="modal" id="agentModal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 Valorant Guide. Неофициальный сайт для фанатов.</p>
+    </footer>
+
+    <script>
+        const agents = [
+            {
+                name: "Jett",
+                role: "Дуэлянт",
+                emoji: "💨",
+                image: "https://avatars.mds.yandex.net/i?id=e0dd852be6409d680c085cc1f1b3632fdd021801-4439530-images-thumbs&n=13&n=13&w=230&h=230",
+                abilities: [
+                    { name: "Восходящий поток (Q)", desc: "Мгновенный рывок вверх. Позволяет занять возвышенность или уйти от урона." },
+                    { name: "Порыв ветра (E)", desc: "Рывок в выбранном направлении. Можно использовать в воздухе." },
+                    { name: "Попутный ветер (C)", desc: "Бросок выбрасывает облако дыма, которое рассеивается через несколько секунд." },
+                    { name: "Шквал клинков (X)", desc: "Метательные ножи, которые перезаряжаются при убийстве. Ultimate способность." }
+                ],
+                description: "Jett — южнокорейская дуэлянтка, которая ставит на мобильность и перестрелки. Её способности позволяют быстро менять позицию и уклоняться от врагов."
+            },
+            {
+                name: "Phoenix",
+                role: "Дуэлянт",
+                emoji: "🔥",
+                image: "https://avatars.mds.yandex.net/i?id=0ffe2a3ad9fc9a931cb18dd3ebe855a029272d5c-8496275-images-thumbs&n=13",
+                abilities: [
+                    { name: "Стена огня (Q)", desc: "Создаёт стену огня, которая блокирует обзор и наносит урон врагам." },
+                    { name: "Вспышка (E)", desc: "Огненная сфера, которая взрывается и ослепляет врагов." },
+                    { name: "Горячие руки (C)", desc: "Область огня, которая наносит урон и может исцелять Phoenix." },
+                    { name: "Феникс (X)", desc: "После смерти возрождается на месте с полным здоровьем. Ultimate способность." }
+                ],
+                description: "Phoenix — британский дуэлянт, который использует силу огня. Может исцеляться и возрождаться, что делает его опасным в ближнем бою."
+            },
+            {
+                name: "Sage",
+                role: "Страж",
+                emoji: "❄️",
+                image: "https://avatars.mds.yandex.net/i?id=466fca8db39d40f0bc3985bb8b70d0266040e9b2-10376972-images-thumbs&n=13",
+                abilities: [
+                    { name: "Сфера исцеления (Q)", desc: "Исцеляет союзника или самого Sage." },
+                    { name: "Сфера медленной зоны (E)", desc: "Создаёт зону, которая замедляет врагов и наносит урон." },
+                    { name: "Сфера барьера (C)", desc: "Создаёт стену из льда, которую можно разрушить." },
+                    { name: "Воскрешение (X)", desc: "Возвращает к жизни погибшего союзника. Ultimate способность." }
+                ],
+                description: "Sage — китайский страж, главный саппорт в команде. Может лечить, воскрешать и создавать барьеры."
+            },
+            {
+                name: "Omen",
+                role: "Контроллер",
+                emoji: "🌑",
+                image: "https://avatars.mds.yandex.net/i?id=00a714ecfc13aaf756c1c8a06f6d1e089daad215-4411542-images-thumbs&n=13&n=13&w=230&h=290",
+                abilities: [
+                    { name: "Паникующий рывок (Q)", desc: "Телепортация на короткую дистанцию." },
+                    { name: "Власть над тенью (E)", desc: "Телепортация на большую дистанцию через карту." },
+                    { name: "Тёмное покрывало (C)", desc: "Создаёт облако дыма, которое ухудшает видимость врагов." },
+                    { name: "Из ниоткуда (X)", desc: "Телепортация с появлением копии, которая отвлекает врагов." }
+                ],
+                description: "Omen — загадочный контроллер, мастер скрытности и телепортации. Идеален для запутывания врагов."
+            },
+            {
+                name: "Cypher",
+                role: "Страж",
+                emoji: "🕷️",
+                image: "https://avatars.mds.yandex.net/i?id=4bf6fb02a9550014f87ab586bf6e3724f368192c-3703415-images-thumbs&n=13",
+                abilities: [
+                    { name: "Тропическая сеть (Q)", desc: "Ловушка, которая раскрывает местоположение врага." },
+                    { name: "Камера слежения (E)", desc: "Устанавливает камеру, с которой можно следить за врагами." },
+                    { name: "Шторка (C)", desc: "Создаёт ячейку, которая раскрывает врагов и ставит их на место." },
+                    { name: "Нейтрализатор (X)", desc: "Раскрывает всех живых врагов на карте." }
+                ],
+                description: "Cypher — марокканский страж, мастер информации и разведки. Собирает данные о врагах и контролирует зоны."
+            },
+            {
+                name: "Reyna",
+                role: "Дуэлянт",
+                emoji: "👁️",
+                image: "https://avatars.mds.yandex.net/i?id=0371128494e9029133d2a1a9d87013298f25f3f0-5254775-images-thumbs&n=13",
+                abilities: [
+                    { name: "Пожиратель душ (Q)", desc: "Убив врага, можно восстановить здоровье." },
+                    { name: "Исчезновение (E)", desc: "Убив врага, можно стать невидимым." },
+                    { name: "Ослепляющий глаз (C)", desc: "Нейтрализует зрение врагов." },
+                    { name: "Королевская охота (X)", desc: "Увеличивает скорострельность и силу атаки. Ultimate способность." }
+                ],
+                description: "Reyna — мексиканская дуэлянтка, которая зависит от убийств. Чем больше она убивает, тем сильнее становится."
+            }
+        ];
+
+        const agentsGrid = document.getElementById('agentsGrid');
+        const modal = document.getElementById('agentModal');
+        const modalBody = document.getElementById('modalBody');
+        const closeBtn = document.querySelector('.modal-close');
+
+        function renderAgentCard(agent) {
+            const imageHtml = agent.image 
+                ? `<img src="${agent.image}" alt="${agent.name}">` 
+                : agent.emoji;
+            
+            return `
+                <div class="agent-card" data-agent='${JSON.stringify(agent)}'>
+                    <div class="agent-header">
+                        <div class="agent-avatar">${imageHtml}</div>
+                        <div class="agent-name">${agent.name}</div>
+                        <div class="agent-role">${agent.role}</div>
+                    </div>
+                    <div class="agent-abilities">
+                        ${agent.abilities.slice(0, 2).map(a => `
+                            <div class="ability">
+                                <div class="ability-name">${a.name}</div>
+                                <div class="ability-desc">${a.desc.substring(0, 80)}...</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function showAgentModal(agent) {
+            const imageHtml = agent.image 
+                ? `<img src="${agent.image}" alt="${agent.name}">` 
+                : agent.emoji;
+            
+            modalBody.innerHTML = `
+                <div style="text-align: center;">
+                    <div class="modal-agent-avatar">${imageHtml}</div>
+                    <h2>${agent.name}</h2>
+                    <p style="color: #ff4655; margin-bottom: 20px;">${agent.role}</p>
+                    <p style="margin-bottom: 25px; line-height: 1.6;">${agent.description}</p>
+                    <h3 style="margin-bottom: 15px;">🎯 Способности</h3>
+                    <div class="modal-abilities">
+                        ${agent.abilities.map(a => `
+                            <div class="ability" style="margin-bottom: 20px;">
+                                <div class="ability-name" style="font-size: 1.1em;">${a.name}</div>
+                                <div class="ability-desc">${a.desc}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            modal.style.display = 'flex';
+        }
+
+        agentsGrid.innerHTML = agents.map(agent => renderAgentCard(agent)).join('');
+        
+        document.querySelectorAll('.agent-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const agent = JSON.parse(card.dataset.agent);
+                showAgentModal(agent);
+            });
+        });
+
+        closeBtn.onclick = () => modal.style.display = 'none';
+        window.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
+    </script>
+</body>
+</html>
